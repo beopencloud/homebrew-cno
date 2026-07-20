@@ -1,26 +1,46 @@
 # CNO Homebrew repo
-A repository holding all CNO formula.
+
+Homebrew tap for Door CLI (`doorctl`).
 
 ## Requirements
 
-* [Homebrew](https://github.com/Homebrew/brew)
+- [Homebrew](https://brew.sh)
 
 ## Installation
 
-Run the following in your command-line:
-
 ```sh
-$ brew tap beopencloud/cno
-$ brew install doorctl
+brew tap beopencloud/cno
 ```
 
-Upgrade to the latest published release:
+### macOS (Apple Silicon or Intel)
+
+Pre-built binary via cask — no Xcode Command Line Tools required:
 
 ```sh
-$ brew update
-$ brew upgrade doorctl
+brew install --cask doorctl
 ```
 
-The `doorctl` formula tracks [beopencloud/cno releases](https://github.com/beopencloud/cno/releases). It is bumped automatically after each prod tag publish, and checked daily via the `Bump doorctl` workflow.
+### Linux
 
+```sh
+brew install doorctl
+```
 
+## Upgrade
+
+```sh
+brew update
+brew upgrade --cask doorctl   # macOS
+brew upgrade doorctl          # Linux
+```
+
+## Migrating from the legacy macOS formula
+
+If you previously installed `beopencloud/cno/doorctl` as a formula:
+
+```sh
+brew uninstall doorctl
+brew install --cask doorctl
+```
+
+Releases track [beopencloud/cno](https://github.com/beopencloud/cno/releases). The tap is bumped automatically after each prod tag publish.

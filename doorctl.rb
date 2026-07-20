@@ -1,21 +1,13 @@
-# Documentation: https://docs.brew.sh/Formula-Cookbook
-#                https://rubydoc.brew.sh/Formula
+# Linux formula. macOS clients should install the cask: brew install --cask doorctl
 class Doorctl < Formula
-  desc "An open source platform to onboard easily and securely organizational teams on multi-cloud Kubernetes clusters from a single console."
+  desc "Door CLI to manage Kubernetes clusters, projects, and environments."
   homepage "https://www.cloudoor.com/"
   license "Apache-2.0"
 
   version "2.4.2"
 
   on_macos do
-    on_arm do
-      url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_arm64.tar.gz"
-      sha256 "b86911050b952e8b0df775469e79866f8d0cfd99e9dfd7b1da9a0dbfe45acfa2"
-    end
-    on_intel do
-      url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_x86_64.tar.gz"
-      sha256 "d48b005df817aa6240b0d659e9b52a1311d51fa1a3572e79d3284b8d1cf4aa02"
-    end
+    disable! date: "2026-07-20", because: "macOS installs are distributed as a cask (brew install --cask doorctl)"
   end
 
   on_linux do

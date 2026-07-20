@@ -28,25 +28,45 @@ for value in "$DARWIN_ARM64" "$DARWIN_X86_64" "$LINUX_ARM64" "$LINUX_X86_64" "$L
   fi
 done
 
+mkdir -p "${ROOT}/Casks"
+
+cat >"${ROOT}/Casks/doorctl.rb" <<EOF
+cask "doorctl" do
+  version "${VERSION}"
+
+  on_arm do
+    sha256 "${DARWIN_ARM64}"
+  end
+  on_intel do
+    sha256 "${DARWIN_X86_64}"
+  end
+
+  url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_#{arch}.tar.gz"
+
+  name "doorctl"
+  desc "Door CLI to manage Kubernetes clusters, projects, and environments."
+  homepage "https://www.cloudoor.com/"
+
+  binary "doorctl"
+
+  livecheck do
+    url "https://github.com/beopencloud/cno/releases/latest"
+    strategy :github_latest
+  end
+end
+EOF
+
 cat >"${ROOT}/doorctl.rb" <<EOF
-# Documentation: https://docs.brew.sh/Formula-Cookbook
-#                https://rubydoc.brew.sh/Formula
+# Linux formula. macOS clients should install the cask: brew install --cask doorctl
 class Doorctl < Formula
-  desc "An open source platform to onboard easily and securely organizational teams on multi-cloud Kubernetes clusters from a single console."
+  desc "Door CLI to manage Kubernetes clusters, projects, and environments."
   homepage "https://www.cloudoor.com/"
   license "Apache-2.0"
 
   version "${VERSION}"
 
   on_macos do
-    on_arm do
-      url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_arm64.tar.gz"
-      sha256 "${DARWIN_ARM64}"
-    end
-    on_intel do
-      url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_x86_64.tar.gz"
-      sha256 "${DARWIN_X86_64}"
-    end
+    disable! date: "2026-07-20", because: "macOS installs are distributed as a cask (brew install --cask doorctl)"
   end
 
   on_linux do
@@ -80,4 +100,4 @@ class Doorctl < Formula
 end
 EOF
 
-echo "Updated doorctl.rb to ${VERSION}"
+echo "Updated doorctl cask and formula to ${VERSION}"

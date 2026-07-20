@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add doorctl.rb
+          git add doorctl.rb Casks/doorctl.rb
           if git diff --staged --quiet; then
             echo "doorctl.rb already up to date for ${TAG}"
             exit 0
