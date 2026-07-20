@@ -1,3 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+TAG="${1:-}"
+
+if [ -z "$TAG" ]; then
+  TAG="$(curl -fsSL https://api.github.com/repos/beopencloud/cno/releases/latest | jq -r .tag_name)"
+fi
+
+VERSION="${TAG#v}"
+CHECKSUMS="$(curl -fsSL "https://github.com/beopencloud/cno/releases/download/${TAG}/checksums.txt")"
+
+sha_for() {
+  echo "$CHECKSUMS" | awk -v file="$1" '$2 == file { print $1; exit }'
+}
+
+DARWIN_ARM64="$(sha_for doorctl_Darwin_arm64.tar.gz)"
+DARWIN_X86_64="$(sha_for doorctl_Darwin_x86_64.tar.gz)"
+LINUX_ARM64="$(sha_for doorctl_Linux_arm64.tar.gz)"
+LINUX_X86_64="$(sha_for doorctl_Linux_x86_64.tar.gz)"
+LINUX_I386="$(sha_for doorctl_Linux_i386.tar.gz)"
+
+for value in "$DARWIN_ARM64" "$DARWIN_X86_64" "$LINUX_ARM64" "$LINUX_X86_64" "$LINUX_I386"; do
+  if [ -z "$value" ]; then
+    echo "Missing checksum in ${TAG} checksums.txt" >&2
+    exit 1
+  fi
+done
+
+cat >"${ROOT}/doorctl.rb" <<EOF
 # Documentation: https://docs.brew.sh/Formula-Cookbook
 #                https://rubydoc.brew.sh/Formula
 class Doorctl < Formula
@@ -5,31 +36,31 @@ class Doorctl < Formula
   homepage "https://www.cloudoor.com/"
   license "Apache-2.0"
 
-  version "2.4.2"
+  version "${VERSION}"
 
   on_macos do
     on_arm do
       url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_arm64.tar.gz"
-      sha256 "b86911050b952e8b0df775469e79866f8d0cfd99e9dfd7b1da9a0dbfe45acfa2"
+      sha256 "${DARWIN_ARM64}"
     end
     on_intel do
       url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_x86_64.tar.gz"
-      sha256 "d48b005df817aa6240b0d659e9b52a1311d51fa1a3572e79d3284b8d1cf4aa02"
+      sha256 "${DARWIN_X86_64}"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Linux_arm64.tar.gz"
-      sha256 "a57422f82297f347b032b0d9fe2a694bcde8097a3a0e0774042209e656250cca"
+      sha256 "${LINUX_ARM64}"
     end
     on_intel do
       if Hardware::CPU.is_64_bit?
         url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Linux_x86_64.tar.gz"
-        sha256 "5497a1d24a11acc5dbcc2a54dc3b670d30b2125f8e75c2cfb37400053ed31c55"
+        sha256 "${LINUX_X86_64}"
       else
         url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Linux_i386.tar.gz"
-        sha256 "26a824ccbac8f1b331ef0bdb14cdc545c4120098bcefa4f8f6661559774842fa"
+        sha256 "${LINUX_I386}"
       end
     end
   end
@@ -47,3 +78,6 @@ class Doorctl < Formula
     system "#{bin}/doorctl", "--help"
   end
 end
+EOF
+
+echo "Updated doorctl.rb to ${VERSION}"
