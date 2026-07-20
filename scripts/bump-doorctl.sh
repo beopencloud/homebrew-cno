@@ -35,13 +35,13 @@ cask "doorctl" do
   version "${VERSION}"
 
   on_arm do
+    url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_arm64.tar.gz"
     sha256 "${DARWIN_ARM64}"
   end
   on_intel do
+    url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_x86_64.tar.gz"
     sha256 "${DARWIN_X86_64}"
   end
-
-  url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_#{arch}.tar.gz"
 
   name "doorctl"
   desc "Door CLI to manage Kubernetes clusters, projects, and environments."
