@@ -28,6 +28,27 @@ for value in "$DARWIN_ARM64" "$DARWIN_X86_64" "$LINUX_ARM64" "$LINUX_X86_64" "$L
   fi
 done
 
+verify_release_asset() {
+  local asset="$1"
+  local url="https://github.com/beopencloud/cno/releases/download/${TAG}/${asset}"
+  local status
+  status="$(curl -fsSL -o /dev/null -w "%{http_code}" -I "$url")"
+  if [ "$status" != "200" ] && [ "$status" != "302" ]; then
+    echo "Release asset not found (${status}): ${url}" >&2
+    exit 1
+  fi
+}
+
+for asset in \
+  doorctl_Darwin_arm64.tar.gz \
+  doorctl_Darwin_x86_64.tar.gz \
+  doorctl_Linux_arm64.tar.gz \
+  doorctl_Linux_x86_64.tar.gz \
+  doorctl_Linux_i386.tar.gz
+do
+  verify_release_asset "$asset"
+done
+
 mkdir -p "${ROOT}/Casks"
 
 cat >"${ROOT}/Casks/doorctl.rb" <<EOF
