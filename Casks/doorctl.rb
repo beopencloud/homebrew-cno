@@ -1,8 +1,6 @@
 cask "doorctl" do
   version "2.4.2"
 
-  deprecate! date: "2026-07-22", because: "moved to the doorcloud/door tap"
-
   on_arm do
     url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_arm64.tar.gz"
     sha256 "b86911050b952e8b0df775469e79866f8d0cfd99e9dfd7b1da9a0dbfe45acfa2"
@@ -16,10 +14,12 @@ cask "doorctl" do
   desc "Door CLI to manage Kubernetes clusters, projects, and environments."
   homepage "https://www.cloudoor.com/"
 
-  binary "doorctl"
-
   livecheck do
     url "https://github.com/beopencloud/cno/releases/latest"
     strategy :github_latest
   end
+
+  deprecate! date: "2026-07-22", because: "moved to the doorcloud/door tap"
+
+  binary "doorctl"
 end
