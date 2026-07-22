@@ -4,6 +4,8 @@ class Doorctl < Formula
   homepage "https://www.cloudoor.com/"
   license "Apache-2.0"
 
+  deprecate! date: "2026-07-22", because: "moved to the doorcloud/door tap"
+
   version "2.4.2"
 
   on_macos do
