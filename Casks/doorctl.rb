@@ -1,6 +1,8 @@
 cask "doorctl" do
   version "2.4.2"
 
+  deprecate! date: "2026-07-22", because: "moved to the doorcloud/door tap"
+
   on_arm do
     url "https://github.com/beopencloud/cno/releases/download/v#{version}/doorctl_Darwin_arm64.tar.gz"
     sha256 "b86911050b952e8b0df775469e79866f8d0cfd99e9dfd7b1da9a0dbfe45acfa2"
