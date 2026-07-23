@@ -14,12 +14,10 @@ cask "doorctl" do
   desc "Door CLI to manage Kubernetes clusters, projects, and environments."
   homepage "https://www.cloudoor.com/"
 
+  binary "doorctl"
+
   livecheck do
     url "https://github.com/beopencloud/cno/releases/latest"
     strategy :github_latest
   end
-
-  deprecate! date: "2026-07-22", because: "moved to the doorcloud/door tap"
-
-  binary "doorctl"
 end
